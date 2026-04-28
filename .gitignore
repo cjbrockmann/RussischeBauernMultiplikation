@@ -403,3 +403,52 @@ packages/
 
 
 
+.aiignore
+.claudeignore
+
+
+# --- Ergänzungen für moderne .NET-Projekte ---
+
+# WPF generated files
+*.xaml.g.cs
+*.xaml.g.i.cs
+*.g.cs
+*.g.i.cs
+*.Designer.cs
+*.resources
+
+# ASP.NET MVC / Web
+wwwroot/
+dist/
+*.map
+*.min.js
+*.min.css
+
+# Web integration test coverage
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Binary assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.bmp
+*.svg
+*.pdf
+*.zip
+*.mp4
+*.mp3
+
+# Secrets
+*.env
+secrets.json
+appsettings.*.json
+
+# Databases
+*.db
+*.sqlite
+
+

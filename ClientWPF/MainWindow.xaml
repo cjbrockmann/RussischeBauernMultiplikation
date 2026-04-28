@@ -1,0 +1,79 @@
+﻿<Window x:Class="ClientWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Russische Bauernmultiplikation" Height="560" Width="900"
+        MinHeight="520" MinWidth="760">
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,10,10" Text="Zahl A:" />
+        <TextBox Grid.Row="0"
+                 Grid.Column="1"
+                 Margin="0,0,15,10"
+                 VerticalContentAlignment="Center"
+                 Text="{Binding ZahlA, UpdateSourceTrigger=PropertyChanged}" />
+
+        <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,10" Text="Zahl B:" />
+        <TextBox Grid.Row="0"
+                 Grid.Column="3"
+                 Margin="0,0,15,10"
+                 VerticalContentAlignment="Center"
+                 Text="{Binding ZahlB, UpdateSourceTrigger=PropertyChanged}" />
+
+        <Button
+                Grid.Row="0"
+                Grid.Column="4"
+                Width="140"
+                HorizontalAlignment="Left"
+                Margin="0,0,0,10"
+                Padding="10,6"
+                Content="Berechnen"
+                Command="{Binding BerechneCommand}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="0,0,0,6" FontWeight="SemiBold" Text="Ergebnisse" />
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Vertical" Margin="0,0,0,16">
+            <TextBlock Margin="0,0,0,4">
+                <Run Text="Russische Methode: " />
+                <Run FontWeight="Bold" Text="{Binding Ergebnis, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Margin="0,0,0,4">
+                <Run Text="Standardprodukt: " />
+                <Run FontWeight="Bold" Text="{Binding MultiplikationsErgebnis, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Foreground="Firebrick" TextWrapping="Wrap" Text="{Binding ErrorMssg, Mode=OneWay}" />
+        </StackPanel>
+
+        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5" Header="Rechenschritte" Padding="8">
+            <DataGrid
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      CanUserAddRows="False"
+                      CanUserDeleteRows="False"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      ItemsSource="{Binding Rechenschritte, Mode=OneWay}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="A" Binding="{Binding A}" Width="*" />
+                    <DataGridTextColumn Header="B" Binding="{Binding B}" Width="*" />
+                    <DataGridTextColumn Header="Ungerade A?" Binding="{Binding IstUngerade}" Width="*" />
+                    <DataGridTextColumn Header="B wird addiert?" Binding="{Binding WirdAddiert}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+    </Grid>
+</Window>

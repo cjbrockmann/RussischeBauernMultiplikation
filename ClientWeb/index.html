@@ -7,110 +7,175 @@
     <script src="Scripts/Multiplikation.js"></script>
     <script language="javascript">
 
-        var meinObj = new Multiplikation();
-        meinObj.ZahlA
-
-
         function BindingCode($scope, $http) {
-            var button = document.getElementById("Berechne");
-            var iframe = document.getElementById("ErrorMessageDisplay");
-            var innerDoc = (iframe.contentWindow || iframe.contentDocument);
-            if (innerDoc.document) innerDoc = innerDoc.document;
-            innerDoc.body.style.backgroundColor = "red"; 
-            button.enabled = false;
             $scope.obj = new Multiplikation();
+            $scope.isBusy = false;
+
             $scope.Berechne = function () {
-            $scope.obj.ErrorMessage = "Bitte warten!";
-            $scope.obj.Ergebnis = null;
-            $scope.obj.MultiplikationsErgebnis = null; 
-            $http(
-                {
+                $scope.isBusy = true;
+                $scope.obj.ErrorMessage = "";
+                $scope.obj.Ergebnis = null;
+                $scope.obj.MultiplikationsErgebnis = null;
+                $scope.obj.Rechenschritte = [];
+                $http({
                     method: 'POST',
-                    url: 'Calculate/Multiplikation',  /*You URL to post*/
-                    data: $scope.obj  /*You data object/class to post*/
-                    , dataType: "json"
+                    url: 'Calculate/Multiplikation',
+                    data: $scope.obj,
+                    dataType: "json"
                 }).then(function successCallback(response) {
-                    // this callback will be called asynchronously
-                    // when the response is available
                     if (Array.isArray(response.data)) { $scope.obj = response.data[0]; }
                     else { $scope.obj = response.data; }
-                    button.enabled = true;
-                    iframe.visibility = "hidden";
-                    innerDoc.open();
-                    innerDoc.write("<html><body></body></html>");
-                    innerDoc.close();
+                    $scope.isBusy = false;
                 }, function errorCallback(err) {
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
                     $scope.obj.ErrorMessage = err.status + ' ' + err.statusText;
-                    innerDoc.open();
-                    innerDoc.write(err.data);
-                    innerDoc.close();
-                    button.enabled = true;
+                    $scope.obj.Rechenschritte = [];
+                    $scope.isBusy = false;
                 });
-
             }
         }
 
         var myApp = angular.module("myApp", []);
         myApp.controller("Calculator", BindingCode);
 
-        function myVisibility(name) {
-            var x = document.getElementById(name);
-            if (x.style.visibility === 'visible') {
-                x.style.visibility = 'hidden';
-            } else {
-                x.style.visibility = 'visible';
-            }
-        }
-
-
     </script>
     <style>
-        .scroll {
+        body {
+            font-family: Segoe UI, Arial, sans-serif;
+            margin: 0;
+            padding: 18px;
+            background: #f8f9fb;
+            color: #222;
+        }
+
+        .app-card {
+            background: #fff;
+            border: 1px solid #d9dce3;
+            border-radius: 8px;
+            padding: 18px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 60px 150px 60px 150px auto;
+            column-gap: 10px;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .input {
+            box-sizing: border-box;
             width: 100%;
-            height: 400px;
-            overflow-y: scroll;
-            overflow-x:visible;
-            visibility:hidden;
+            padding: 6px 8px;
+            border: 1px solid #bcc3cf;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 140px;
+            padding: 8px 10px;
+            border: 1px solid #2b5fd9;
+            background: #2f6df6;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn:disabled {
+            background: #8ca8eb;
+            border-color: #8ca8eb;
+            cursor: default;
+        }
+
+        .section-title {
+            margin: 4px 0 8px 0;
+            font-weight: 600;
+        }
+
+        .result-line {
+            margin: 0 0 6px 0;
+        }
+
+        .error {
+            color: #b00020;
+            min-height: 20px;
+            margin-bottom: 12px;
+        }
+
+        .group {
+            border: 1px solid #d9dce3;
+            border-radius: 6px;
+            padding: 10px;
+            background: #fff;
+        }
+
+        .group-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        table.steps {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table.steps th, table.steps td {
+            border-bottom: 1px solid #e7e9ee;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        table.steps th {
+            background: #f3f5fa;
         }
     </style>
 </head>
 <body>
-    <h1>Russische Bauernmultiplikation</h1>
     <div ng-app="myApp">
         <div ng-controller="Calculator">
-            <form id="myFrm" action="#" method="get">
-                <table border="0" cellpadding="4" cellspacing="2">
-                    <tr>
-                        <th>Zahl A</th>
-                        <th>Zahl B</th>
-                    </tr>
-                    <tr>
-                        <td><input type="number" id="ZahlA" ng-model="obj.ZahlA" /></td>
-                        <td><input type="number" id="ZahlB" ng-model="obj.ZahlB" /></td>
-                    </tr>
-                    <tr><td colspan="2">&nbsp;</td></tr>
-                    <tr>
-                        <th>Ergebnis</th>
-                        <td><input type="text" id="Ergebnis" ng-model="obj.Ergebnis" readonly /></td>
-                    </tr>
-                    <tr>
-                        <th>Multiplikation</th>
-                        <td><input type="number" id="RichtigesErgebnis" ng-model="obj.MultiplikationsErgebnis" readonly /></td>
-                    </tr>
-                   <tr>
-                       <td colspan="2" align="center">
-                       <input type="button" id="Berechne" value="Berechne" name="Berechne" ng-click="Berechne()" /> 
-                       </td>
-                    </tr>
-                </table>
-            </form>
-            <span style="color:red"><a href="#" onclick="myVisibility('ErrorMessageDisplay')"> {{obj.ErrorMessage}}</a></span>
+            <div class="app-card">
+                <h1>Russische Bauernmultiplikation</h1>
+
+                <div class="form-row">
+                    <label for="ZahlA">Zahl A:</label>
+                    <input class="input" type="number" id="ZahlA" ng-model="obj.ZahlA" />
+                    <label for="ZahlB">Zahl B:</label>
+                    <input class="input" type="number" id="ZahlB" ng-model="obj.ZahlB" />
+                    <button class="btn" id="Berechne" ng-click="Berechne()" ng-disabled="isBusy">Berechnen</button>
+                </div>
+
+                <div class="section-title">Ergebnisse</div>
+                <p class="result-line"><strong>Russische Methode:</strong> {{obj.Ergebnis}}</p>
+                <p class="result-line"><strong>Standardprodukt:</strong> {{obj.MultiplikationsErgebnis}}</p>
+                <div class="error">{{obj.ErrorMessage}}</div>
+
+                <div class="group">
+                    <div class="group-title">Rechenschritte</div>
+                    <table class="steps">
+                        <thead>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>Ungerade A?</th>
+                                <th>B wird addiert?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="step in obj.Rechenschritte">
+                                <td>{{step.A}}</td>
+                                <td>{{step.B}}</td>
+                                <td>{{step.IstUngerade}}</td>
+                                <td>{{step.WirdAddiert}}</td>
+                            </tr>
+                            <tr ng-if="!obj.Rechenschritte || obj.Rechenschritte.length === 0">
+                                <td colspan="4">Keine Rechenschritte vorhanden.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-
-<iframe id="ErrorMessageDisplay" class="scroll"></iframe>
-
 </body>
 </html>

@@ -6,6 +6,13 @@ using RussischeBauernMultiplikation;
 
 namespace ClientWeb.Models
 {
+    public class RechenschrittModel
+    {
+        public int A { get; set; }
+        public int B { get; set; }
+        public string IstUngerade { get; set; }
+        public string WirdAddiert { get; set; }
+    }
 
     /// <summary>
     /// Diese Klasse dient zur Kommunikation mit dem WebFrontend 
@@ -17,6 +24,8 @@ namespace ClientWeb.Models
         public long? Ergebnis { get; set; }
         public long? MultiplikationsErgebnis { get; set; }
         public bool KannBerechnetWerden { get; set; }
+        public string ErrorMessage { get; set; }
+        public List<RechenschrittModel> Rechenschritte { get; set; }
         public KommunikationsModel()
         {
             KannBerechnetWerden = true;
@@ -24,6 +33,8 @@ namespace ClientWeb.Models
             ZahlB = 0;
             Ergebnis = 0;
             MultiplikationsErgebnis = 0;
+            ErrorMessage = string.Empty;
+            Rechenschritte = new List<RechenschrittModel>();
         }
 
 
@@ -34,13 +45,36 @@ namespace ClientWeb.Models
     /// </summary>
     public class MultiplikationModel : KommunikationsModel
     {
-
-
         public void Mult()
         {
-            KannBerechnetWerden = BauernMultiplikation.KannBerechnetWerden(this.ZahlA, this.ZahlB);
-            this.Ergebnis = BauernMultiplikation.Mul(this.ZahlA, this.ZahlB);
-            this.MultiplikationsErgebnis = this.ZahlA * this.ZahlB;
+            Rechenschritte.Clear();
+            ErrorMessage = string.Empty;
+
+            try
+            {
+                KannBerechnetWerden = BauernMultiplikation.KannBerechnetWerden(ZahlA, ZahlB);
+                BauernMultiplikation.Rechenschritte.Clear();
+                Ergebnis = BauernMultiplikation.Mul(ZahlA, ZahlB);
+                MultiplikationsErgebnis = ZahlA * ZahlB;
+
+                Rechenschritte = BauernMultiplikation.Rechenschritte
+                    .Select(s => new RechenschrittModel
+                    {
+                        A = s.A,
+                        B = s.B,
+                        IstUngerade = s.A % 2 == 1 ? "Ja" : "Nein",
+                        WirdAddiert = s.A % 2 == 1 ? "Ja" : "Nein"
+                    })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = ex.Message;
+                Ergebnis = null;
+                MultiplikationsErgebnis = null;
+                KannBerechnetWerden = false;
+                Rechenschritte = new List<RechenschrittModel>();
+            }
 
         }
     }

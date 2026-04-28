@@ -6,7 +6,17 @@ var Multiplikation = /** @class */ (function () {
         this.MultiplikationsErgebnis = null;
         this.KannBerechnetWerden = true;
         this.ErrorMessage = "";
+        this.Rechenschritte = [];
     }
     return Multiplikation;
+}());
+var Rechenschritt = /** @class */ (function () {
+    function Rechenschritt() {
+        this.A = null;
+        this.B = null;
+        this.IstUngerade = "";
+        this.WirdAddiert = "";
+    }
+    return Rechenschritt;
 }());
 //# sourceMappingURL=Multiplikation.js.map

@@ -11,6 +11,10 @@ namespace RussischeBauernMultiplikation
     /// </summary>
     public static class BauernMultiplikation
     {
+
+        public static List<(int A, int B)> Rechenschritte = new List<(int A, int B)>();
+        public static List<int> Indexliste = new List<int>();
+
         /// <summary>
         /// Russische Bauernmultiplikation
         /// Der erste Faktor wird durch zwei geteilt, bis er eins wird. 
@@ -24,7 +28,8 @@ namespace RussischeBauernMultiplikation
         public static int? Mul(int? a, int? b)
         {
             int? result  = null;
-            int? prevB = b;
+            int i = 0;
+            string binaryResult = string.Empty;
 
             string fehler = EingabeFehlerMeldung(a, b); 
             if (!string.IsNullOrEmpty(fehler))
@@ -38,17 +43,22 @@ namespace RussischeBauernMultiplikation
             result = 0;
             while (a > 0)
             {
+
+                Rechenschritte.Add((a.Value, b.Value)); 
                 if (a % 2 == 1)
                 {
                     OverflowCheck(result + b);
                     result = checked(result + b);
+                    binaryResult = "1" + binaryResult;
                 }
+                else binaryResult = "0" + binaryResult;
                 if (a == 1 ) { a = 0; }
                 else {
                     OverflowCheck(b * 2);
                     a = a / 2;
                     b = checked(b * 2);
                 }
+                i++;
             }
 
             return result;
