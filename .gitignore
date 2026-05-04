@@ -452,3 +452,9 @@ appsettings.*.json
 *.sqlite
 
 
+/.idea
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/RussischeBauernMultiplikation.iml
+/.idea/vcs.xml
+/.idea/workspace.xml
